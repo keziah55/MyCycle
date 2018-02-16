@@ -6,7 +6,8 @@ Supplies AddLineDialog, NewRateDialog, and RemoveLineDialog.
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QAbstractItemView, QAction, QDialog, 
-                             QDialogButtonBox, QGridLayout, QLabel, QLineEdit, 
+                             QDialogButtonBox, QGridLayout, QGroupBox, 
+                             QHBoxLayout, QLabel, QLineEdit, 
                              QMessageBox, QPushButton, QTableWidget, 
                              QTableWidgetItem, QVBoxLayout)
 
@@ -61,9 +62,15 @@ class AddLineDialog(QDialog_CTRL_Q):
         # message for main window status bar
         self.msg = ''
         
-        self.newButton = QPushButton(QIcon.fromTheme('list-add'), '')
-        self.newButton.setShortcut(QKeySequence(Qt.CTRL + Qt.Key_N))
-        self.newButton.clicked.connect(self.addLine)
+        newButton = QPushButton(QIcon.fromTheme('list-add'), '')
+        newButton.setMinimumWidth(70)
+        newButton.setShortcut(QKeySequence(Qt.CTRL + Qt.Key_N))
+        newButton.clicked.connect(self.addLine)
+        
+        rmvButton = QPushButton(QIcon.fromTheme('list-remove'), '')
+        rmvButton.setMinimumWidth(70)
+        rmvButton.setShortcut(QKeySequence(Qt.CTRL + Qt.Key_R))
+        rmvButton.clicked.connect(self.rmvLine)
         
         self.dateLabel = QLabel('Date')
         self.timeLabel = QLabel('Time')
@@ -76,29 +83,60 @@ class AddLineDialog(QDialog_CTRL_Q):
 
         buttonBox.accepted.connect(self.set_new_values)
         buttonBox.rejected.connect(self.reject)
-
-        self.layout = QGridLayout()
         
+        # make GroupBox for new, ok and cancel buttons
+        groupBoxBtn = QGroupBox()
+        # don't draw a frame
+        groupBoxBtn.setFlat(True)
+        
+        # make HBoxLayout and add the buttons
+        dialogBtnBox = QHBoxLayout()
+        dialogBtnBox.addWidget(newButton)
+#        dialogBtnBox.addWidget(rmvButton)
+        dialogBtnBox.addWidget(buttonBox)
+        
+        # put the HBox in the GroupBox
+        groupBoxBtn.setLayout(dialogBtnBox)
+        groupBoxBtn.setFixedSize(260,50)
+        
+        # make GroupBox for the line labels and edit boxes
+        groupBoxEdit = QGroupBox()
+        # don't draw a frame
+        groupBoxEdit.setFlat(True)
+        
+        # make GridLayout and add the labels
+        self.editGrid = QGridLayout()
+        # have class member for row, so that new rows can be added on the fly
         self.row = 0
+        self.editGrid.addWidget(self.dateLabel, self.row, 0)
+        self.editGrid.addWidget(self.timeLabel, self.row, 1)
+        self.editGrid.addWidget(self.distLabel, self.row, 2)
+        self.editGrid.addWidget(self.calLabel,  self.row, 3)
+        self.editGrid.addWidget(self.odoLabel,  self.row, 4)
         
-        self.layout.addWidget(self.newButton, self.row, 0)
-        self.layout.addWidget(buttonBox, self.row, 1)
-        
-        self.row += 1
+        # put the GridLayout in the GroupBox
+        groupBoxEdit.setLayout(self.editGrid)
 
-        self.layout.addWidget(self.dateLabel, self.row, 0)
-        self.layout.addWidget(self.timeLabel, self.row, 1)
-        self.layout.addWidget(self.distLabel, self.row, 2)
-        self.layout.addWidget(self.calLabel, self.row, 3)
-        self.layout.addWidget(self.odoLabel, self.row, 4)
+        # overall dialog layout is VBox
+        layout = QVBoxLayout()
+        # add the GroupBoxes to the VBox
+        layout.addWidget(groupBoxBtn)
+        layout.addWidget(groupBoxEdit)
         
-        # add lineedit objects
+        # add LineEdit objects
         self.addLine()
         
-        self.setLayout(self.layout)
+        # set the VBox as the layout
+        self.setLayout(layout)
         
+        self.width = 570
+        self.resize(self.width, 130)
         self.setWindowTitle('Add data')
         
+
+    @property
+    def shape(self):
+        return self.size().width(), self.size().height()
         
     def makeLine(self):
         """ Make and initialise QLineEdit objects. """
@@ -132,11 +170,42 @@ class AddLineDialog(QDialog_CTRL_Q):
         # increment row
         self.row += 1
         
-        self.layout.addWidget(da, self.row, 0)
-        self.layout.addWidget(t, self.row, 1)
-        self.layout.addWidget(di, self.row, 2)
-        self.layout.addWidget(c, self.row, 3)
-        self.layout.addWidget(o, self.row, 4)
+        self.editGrid.addWidget(da, self.row, 0)
+        self.editGrid.addWidget(t, self.row, 1)
+        self.editGrid.addWidget(di, self.row, 2)
+        self.editGrid.addWidget(c, self.row, 3)
+        self.editGrid.addWidget(o, self.row, 4)
+        
+#        print('Add: {}, {}'.format(*self.shape))
+#        print('rowCount: {}'.format(self.editGrid.rowCount()))
+        
+        
+    def rmvLine(self):
+        
+        try:
+            self.rows.pop(-1)
+        
+            for col in range(5):
+                item = self.editGrid.itemAtPosition(self.row, col)
+                widget = item.widget()
+                self.editGrid.removeWidget(widget)
+                
+            self.row -= 1
+            
+            lineHeight = widget.size().height()
+            
+            width, height = self.shape
+            
+            self.resize(width, height-lineHeight)
+            
+#            print('Rmv: {}, {}'.format(*self.shape))
+#            print('rowCount: {}'.format(self.editGrid.rowCount()))
+            
+        except IndexError:
+            title = 'Could not remove line'
+            message = 'There are no more lines to remove!' 
+            QMessageBox.warning(self, title, message)
+            
         
     def set_new_values(self):
         """ Put new csv data into Data object. """

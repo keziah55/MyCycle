@@ -3,8 +3,7 @@ Dialogs required by Timesheet when adding or removing data.
 Supplies AddLineDialog, NewRateDialog, and RemoveLineDialog.
 """
 
-from PyQt5.QtGui import QIcon, QKeySequence
-from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QAbstractItemView, QAction, QDialog, 
                              QDialogButtonBox, QGridLayout, QGroupBox, 
                              QHBoxLayout, QLabel, QLineEdit, 
@@ -37,22 +36,25 @@ class QDialog_CTRL_Q(QDialog):
 
 class AddLineDialog(QDialog_CTRL_Q):
     
-    def __init__(self, data):
+    def __init__(self, data, columnLabels):
         """ Add lines to csv file. 
             
             Parameters
             ----------
             data : Data object
                 object which holds all the csv data
+                
+            columnLabels : list
+                list of columns headers
         """
         super().__init__()
         
-        self.initUI(data)
+        self.initUI(data, columnLabels)
         
         
-    def initUI(self, data):
+    def initUI(self, data, columnLabels):
         
-        # 'data' is the csv/config data object
+        # 'data' is the csv data object
         self.data = data
         
         self.newData = ''
@@ -62,21 +64,23 @@ class AddLineDialog(QDialog_CTRL_Q):
         # message for main window status bar
         self.msg = ''
         
+        # set labels
+        labels = tuple(QLabel(label) for label in columnLabels)
+
+        # get number of columns
+        self.ncols = len(labels)
+        
+        editButtonSize = 65
+        
         newButton = QPushButton(QIcon.fromTheme('list-add'), '')
-        newButton.setMinimumWidth(70)
-        newButton.setShortcut(QKeySequence(Qt.CTRL + Qt.Key_N))
+        newButton.setMinimumWidth(editButtonSize)
+        newButton.setShortcut("CTRL+N")
         newButton.clicked.connect(self.addLine)
         
         rmvButton = QPushButton(QIcon.fromTheme('list-remove'), '')
-        rmvButton.setMinimumWidth(70)
-        rmvButton.setShortcut(QKeySequence(Qt.CTRL + Qt.Key_R))
+        rmvButton.setMinimumWidth(editButtonSize)
+        rmvButton.setShortcut("CTRL+R")
         rmvButton.clicked.connect(self.rmvLine)
-        
-        self.dateLabel = QLabel('Date')
-        self.timeLabel = QLabel('Time')
-        self.distLabel = QLabel('Distance (km)')
-        self.calLabel = QLabel('Calories') 
-        self.odoLabel = QLabel('Odometer (km)') 
 
         buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | 
                                      QDialogButtonBox.Cancel)
@@ -92,12 +96,12 @@ class AddLineDialog(QDialog_CTRL_Q):
         # make HBoxLayout and add the buttons
         dialogBtnBox = QHBoxLayout()
         dialogBtnBox.addWidget(newButton)
-#        dialogBtnBox.addWidget(rmvButton)
+        dialogBtnBox.addWidget(rmvButton)
         dialogBtnBox.addWidget(buttonBox)
         
         # put the HBox in the GroupBox
         groupBoxBtn.setLayout(dialogBtnBox)
-        groupBoxBtn.setFixedSize(260,50)
+        groupBoxBtn.setFixedSize(330,50)
         
         # make GroupBox for the line labels and edit boxes
         groupBoxEdit = QGroupBox()
@@ -108,12 +112,10 @@ class AddLineDialog(QDialog_CTRL_Q):
         self.editGrid = QGridLayout()
         # have class member for row, so that new rows can be added on the fly
         self.row = 0
-        self.editGrid.addWidget(self.dateLabel, self.row, 0)
-        self.editGrid.addWidget(self.timeLabel, self.row, 1)
-        self.editGrid.addWidget(self.distLabel, self.row, 2)
-        self.editGrid.addWidget(self.calLabel,  self.row, 3)
-        self.editGrid.addWidget(self.odoLabel,  self.row, 4)
-        
+        # put labels in Grid
+        for n in range(self.ncols):
+            self.editGrid.addWidget(labels[n], self.row, n)
+
         # put the GridLayout in the GroupBox
         groupBoxEdit.setLayout(self.editGrid)
 
@@ -129,34 +131,26 @@ class AddLineDialog(QDialog_CTRL_Q):
         # set the VBox as the layout
         self.setLayout(layout)
         
-        self.width = 570
-        self.resize(self.width, 130)
+        self.resize(570, 130)
         self.setWindowTitle('Add data')
         
 
     @property
     def shape(self):
+        """ Return tuple of (width, height) """
         return self.size().width(), self.size().height()
         
     def makeLine(self):
-        """ Make and initialise QLineEdit objects. """
+        """ Make and initialise QLineEdit objects """
         
-        self.dateEdit = QLineEdit(self)
-        self.timeEdit = QLineEdit(self)
-        self.distEdit = QLineEdit(self)
-        self.calEdit  = QLineEdit(self)
-        self.odoEdit  = QLineEdit(self)
+        edits = list(QLineEdit(self) for n in range(self.ncols))
         
-        # display today's date and default rate
-        self.dateEdit.setText((str_to_date('').strftime(datefmt)))
-        self.timeEdit.setText('')
-        self.distEdit.setText('')
-        self.calEdit.setText('')
-        self.odoEdit.setText('')
-
-        return (self.dateEdit, self.timeEdit, self.distEdit, self.calEdit,
-                self.odoEdit)
+        # set today's set in the Date column
+        edits[0].setText(str_to_date('').strftime(datefmt))
             
+        return tuple(edits)
+
+
     def addLine(self):
         """ Add new line to Dialog """
         
@@ -164,33 +158,29 @@ class AddLineDialog(QDialog_CTRL_Q):
         fields = self.makeLine()
         # keep all rows in a list, so their contents can be accessed
         self.rows.append(fields)
-        # unpack QLineEdits
-        da, t, di, c, o = fields
         
         # increment row
         self.row += 1
         
-        self.editGrid.addWidget(da, self.row, 0)
-        self.editGrid.addWidget(t, self.row, 1)
-        self.editGrid.addWidget(di, self.row, 2)
-        self.editGrid.addWidget(c, self.row, 3)
-        self.editGrid.addWidget(o, self.row, 4)
+        for n in range(self.ncols):
+            self.editGrid.addWidget(fields[n], self.row, n)
         
 #        print('Add: {}, {}'.format(*self.shape))
-#        print('rowCount: {}'.format(self.editGrid.rowCount()))
         
         
     def rmvLine(self):
         
-        try:
-            self.rows.pop(-1)
+        if self.row > 1:
         
-            for col in range(5):
+            for col in range(self.ncols):
                 item = self.editGrid.itemAtPosition(self.row, col)
                 widget = item.widget()
+                print(widget.text())
                 self.editGrid.removeWidget(widget)
                 
             self.row -= 1
+            
+            del self.rows[-1]
             
             lineHeight = widget.size().height()
             
@@ -199,9 +189,8 @@ class AddLineDialog(QDialog_CTRL_Q):
             self.resize(width, height-lineHeight)
             
 #            print('Rmv: {}, {}'.format(*self.shape))
-#            print('rowCount: {}'.format(self.editGrid.rowCount()))
             
-        except IndexError:
+        else:
             title = 'Could not remove line'
             message = 'There are no more lines to remove!' 
             QMessageBox.warning(self, title, message)
@@ -281,32 +270,21 @@ class TableLineDiaolg(QDialog_CTRL_Q):
         
         self.data = data
         
-        self.num_rows = len(self.data.csv_df)
-        self.num_cols = len(self.data.columns)
+        self.nrows = len(self.data.csv_df)
+        self.ncols = len(self.data.columns)
 
         # make table
-        self.table = QTableWidget(self.num_rows, self.num_cols)
+        self.table = QTableWidget(self.nrows, self.ncols)
         # remove numbers from rows
         self.table.verticalHeader().setVisible(False)
         # set headers
         self.table.setHorizontalHeaderLabels(self.data.columns)
 
         # put data in table
-        for row, data in enumerate(self.data.csv_df):
-            
-            date, time, dist, cal, odo = data.split(',')
-            
-            item0 = QTableWidgetItem(date)
-            item1 = QTableWidgetItem(time)
-            item2 = QTableWidgetItem(dist)
-            item3 = QTableWidgetItem(cal)
-            item4 = QTableWidgetItem(odo)
-            self.table.setItem(row, 0, item0)
-            self.table.setItem(row, 1, item1)
-            self.table.setItem(row, 2, item2)
-            self.table.setItem(row, 3, item3)
-            self.table.setItem(row, 4, item4)
-            
+        for row, d in enumerate(self.data):
+            for n, datum in enumerate(d):
+                item = QTableWidgetItem(str(datum))
+                self.table.setItem(row, n, item)
         
         buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | 
                                      QDialogButtonBox.Cancel)
@@ -314,12 +292,14 @@ class TableLineDiaolg(QDialog_CTRL_Q):
         buttonBox.accepted.connect(self.apply_changes)
         buttonBox.rejected.connect(self.reject)
         
-        for i in range(self.num_rows):
+        for i in range(self.nrows):
            self.table.setColumnWidth(i, 110)
         
         # for some reason, self.table.width() returns a number larger than
         # it should be
-        width = 5.05*self.table.columnWidth(0)
+        # and just using ncols * columnWidth puts a scrollbar on the bottom,
+        # which is annoying, so I've widened it slightly
+        width = (self.ncols + 0.05) * self.table.columnWidth(0)
         
         # exaplin how this window works
         # self.explain.setText() should be applied in the derived classes
@@ -373,7 +353,8 @@ class RemoveLineDialog(TableLineDiaolg):
         """ Remove selected rows from the csv file. """
         self.selected = self.table.selectedItems()
         
-        rows = set(item.row() for item in self.selected)
+        rows = list(set(item.row() for item in self.selected))
+        rows.sort(reverse=True)
         
         for idx in rows:
             self.data.remove_line(idx)
@@ -401,8 +382,8 @@ class EditLineDialog(TableLineDiaolg):
     def apply_changes(self):
         # check every item in the table against the csv data 
         
-        for row in range(self.num_rows):
-            for col in range(self.num_cols):
+        for row in range(self.nrows):
+            for col in range(self.ncols):
                 item = self.table.item(row, col)
                 
                 if item is not None:

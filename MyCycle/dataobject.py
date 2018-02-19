@@ -42,6 +42,8 @@ class Data:
     
     def __setitem__(self, key, value):
         
+#        print(key, value)
+        
         if not isinstance(key, tuple):
             raise ValueError('Indices should be tuple')
         else:
@@ -56,10 +58,15 @@ class Data:
             new_row = list(map(str, new_row))
             new_row = ','.join(new_row)
             
+#            print('old_row:', old_row)
+#            print('new_row:', new_row)
+            
             self.csv_data = re.sub(old_row, new_row, self.csv_data)
             
             self.modified = True
             self.get_df()
+            
+#            print('Data.csv_data:\n', self.csv_data)
     
     def __getitem__(self, key):
         

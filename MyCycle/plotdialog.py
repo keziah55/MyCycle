@@ -131,6 +131,15 @@ class PlotDialog(QWidget):
         dates = list(datetime.strptime(date, '%Y-%m-%d').date() 
                      for date in self.data.getColumn('Date'))
         
+        # TODO staircase doesn't quite work yet: the last one doesn't appear
+        dates_long = [dates[0]] + [i for i in dates[1:] for n in range(2)]
+        
+        odo = self.data.getColumn('Odometer (km)')
+        odo_long = [i for i in odo[:-1] for n in range(2)]
+        
+        fill_style = ['mountain', 'staircase']
+        background_fill = fill_style[1]
+        
         # make axes
         ax1 = self.figure.add_subplot(111)
         ax2 = ax1.twinx()
@@ -166,13 +175,18 @@ class PlotDialog(QWidget):
         ax1.tick_params('y', color=ax1_col, labelcolor=ax1_col)
         
         # ax2 y data
-        ax2.plot_date(dates, self.data.getColumn('Odometer (km)'), 
-                      color=ax2_col1, marker='') 
-        ax2.fill_between(dates, 0, self.data.getColumn('Odometer (km)'), 
-                         facecolor=ax2_col1)
+        if background_fill == 'mountain':
+            ax2.plot_date(dates, odo, color=ax2_col1, marker='') 
+            ax2.fill_between(dates, 0, odo, facecolor=ax2_col1)
+        
+        elif background_fill == 'staircase':
+            ax2.plot_date(dates_long, odo_long, color=ax2_col1, marker='') 
+            ax2.fill_between(dates_long, 0, odo_long, facecolor=ax2_col1)
+            
         ax2.set_ylim(ymin=75)
         ax2.set_ylabel('Total distance (km)', color=ax2_col2)
         ax2.tick_params('y', colors=ax2_col2, labelcolor=ax2_col2)
+        
         
         # put ax1 in front of ax2
         ax1.set_zorder(ax2.get_zorder()+1)

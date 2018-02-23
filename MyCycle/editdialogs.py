@@ -223,13 +223,14 @@ class AddLineDialog(QDialog_CTRL_Q):
                 error = True
             
             try:
+                # TODO newData should be list, not string
                 line = ','.join(line)
                 self.newData += line + '\n'
             except TypeError:
                 self.empty_value_message(line)
             
         if not error:
-            self.data.add_new(self.newData)
+            self.data.addRow(self.newData)
             self.accept()
         
     def empty_value_message(self, line):

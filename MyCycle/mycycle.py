@@ -56,9 +56,9 @@ class MyCycle(QMainWindow):
         
     def update_display(self):
         """ Update text and window title """
-        print('update_display')
+#        print('update_display')
         self.textEdit.setHtml(csv_to_html(self.data.csv_data))
-        print(self.data.csv_data)
+#        print(self.data.csv_data)
         if self.data.modified:
             self.statusBar().showMessage('Updated', self.statTimeout)
             

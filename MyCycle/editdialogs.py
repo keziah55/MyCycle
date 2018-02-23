@@ -277,8 +277,9 @@ class TableLineDiaolg(QDialog_CTRL_Q):
         # set headers
         self.table.setHorizontalHeaderLabels(self.data.columns)
 
-        # put data in table
-        for row, d in enumerate(self.data):
+        # put data in table (in reverse order)
+        for row in range(self.nrows):
+            d = self.data[self.nrows-row-1]
             for n, datum in enumerate(d):
                 item = QTableWidgetItem(str(datum))
                 self.table.setItem(row, n, item)
@@ -354,6 +355,7 @@ class RemoveLineDialog(TableLineDiaolg):
         rows.sort(reverse=True)
         
         for idx in rows:
+            idx = self.nrows - idx - 1
             self.data.removeRow(idx)
 
         self.accept()
@@ -383,20 +385,22 @@ class EditLineDialog(TableLineDiaolg):
             for col in range(self.ncols):
                 item = self.table.item(row, col)
                 
+                df_row = self.nrows - row - 1
+                
                 if item is not None:
                     # cast to float/string, as for some reason, items that
                     # appear to be the same return False when == is applied
                     try:
                         t = float(item.text())
-                        d = float(self.data[row,col])
+                        d = float(self.data[df_row,col])
                     except ValueError:
                         t = str(item.text())
-                        d = str(self.data[row,col])
+                        d = str(self.data[df_row,col])
                         
                     # if item in table is different from item in csv, write
                     # to csv
                     if t != d:
-                        self.data[row, col] = t
+                        self.data[df_row, col] = t
                     
         self.accept()
         

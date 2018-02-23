@@ -57,8 +57,6 @@ class AddLineDialog(QDialog_CTRL_Q):
         # 'data' is the csv data object
         self.data = data
         
-        self.newData = ''
-        
         self.rows = []
         
         # message for main window status bar
@@ -199,7 +197,7 @@ class AddLineDialog(QDialog_CTRL_Q):
     def set_new_values(self):
         """ Put new csv data into Data object. """
         
-        self.newData = ''
+        new_rows = []
         
         error = False
         
@@ -223,14 +221,13 @@ class AddLineDialog(QDialog_CTRL_Q):
                 error = True
             
             try:
-                # TODO newData should be list, not string
-                line = ','.join(line)
-                self.newData += line + '\n'
+                new_rows.append(line)
             except TypeError:
                 self.empty_value_message(line)
             
         if not error:
-            self.data.addRow(self.newData)
+            for row in new_rows:
+                self.data.addRow(row)
             self.accept()
         
     def empty_value_message(self, line):
@@ -358,7 +355,7 @@ class RemoveLineDialog(TableLineDiaolg):
         rows.sort(reverse=True)
         
         for idx in rows:
-            self.data.remove_line(idx)
+            self.data.removeRow(idx)
 
         self.accept()
         

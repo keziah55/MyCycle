@@ -57,8 +57,6 @@ class AddLineDialog(QDialog_CTRL_Q):
         # 'data' is the csv data object
         self.data = data
         
-        self.newData = ''
-        
         self.rows = []
         
         # message for main window status bar
@@ -199,7 +197,7 @@ class AddLineDialog(QDialog_CTRL_Q):
     def set_new_values(self):
         """ Put new csv data into Data object. """
         
-        self.newData = ''
+        new_rows = []
         
         error = False
         
@@ -223,13 +221,13 @@ class AddLineDialog(QDialog_CTRL_Q):
                 error = True
             
             try:
-                line = ','.join(line)
-                self.newData += line + '\n'
+                new_rows.append(line)
             except TypeError:
                 self.empty_value_message(line)
             
         if not error:
-            self.data.add_new(self.newData)
+            for row in new_rows:
+                self.data.addRow(row)
             self.accept()
         
     def empty_value_message(self, line):
@@ -270,8 +268,7 @@ class TableLineDiaolg(QDialog_CTRL_Q):
         
         self.data = data
         
-        self.nrows = len(self.data.csv_df)
-        self.ncols = len(self.data.columns)
+        self.nrows, self.ncols = self.data.shape
 
         # make table
         self.table = QTableWidget(self.nrows, self.ncols)
@@ -280,8 +277,9 @@ class TableLineDiaolg(QDialog_CTRL_Q):
         # set headers
         self.table.setHorizontalHeaderLabels(self.data.columns)
 
-        # put data in table
-        for row, d in enumerate(self.data):
+        # put data in table (in reverse order)
+        for row in range(self.nrows):
+            d = self.data[self.nrows-row-1]
             for n, datum in enumerate(d):
                 item = QTableWidgetItem(str(datum))
                 self.table.setItem(row, n, item)
@@ -357,7 +355,8 @@ class RemoveLineDialog(TableLineDiaolg):
         rows.sort(reverse=True)
         
         for idx in rows:
-            self.data.remove_line(idx)
+            idx = self.nrows - idx - 1
+            self.data.removeRow(idx)
 
         self.accept()
         
@@ -386,20 +385,22 @@ class EditLineDialog(TableLineDiaolg):
             for col in range(self.ncols):
                 item = self.table.item(row, col)
                 
+                df_row = self.nrows - row - 1
+                
                 if item is not None:
                     # cast to float/string, as for some reason, items that
                     # appear to be the same return False when == is applied
                     try:
                         t = float(item.text())
-                        d = float(self.data[row,col])
+                        d = float(self.data[df_row,col])
                     except ValueError:
                         t = str(item.text())
-                        d = str(self.data[row,col])
+                        d = str(self.data[df_row,col])
                         
                     # if item in table is different from item in csv, write
                     # to csv
                     if t != d:
-                        self.data[row, col] = t
+                        self.data[df_row, col] = t
                     
         self.accept()
         

@@ -151,8 +151,17 @@ def _parse_line(line):
     date_list[2] = date_list[2][-2:]  # remove century from year
     date = ' '.join(date_list)
     
+    # if time is scalar, this is exact number of minutes
+    if len(time.split(':')) == 1:
+        time += ':00'
+        
     min_sec = [int(t) for t in time.split(':')]
-    time_sec = min_sec[0]*60 + min_sec[1] # duration in seconds
+    
+    # format time
+    time = '{:02d}:{:02d}'.format(*min_sec)
+    
+    # get duration in seconds
+    time_sec = min_sec[0]*60 + min_sec[1]
     
     dist, cal, odo = list(map(float, [dist, cal, odo]))
     

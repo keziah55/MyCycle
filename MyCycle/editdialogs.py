@@ -268,8 +268,7 @@ class TableLineDiaolg(QDialog_CTRL_Q):
         
         self.data = data
         
-        self.nrows = len(self.data.csv_df)
-        self.ncols = len(self.data.columns)
+        self.nrows, self.ncols = self.data.shape
 
         # make table
         self.table = QTableWidget(self.nrows, self.ncols)

@@ -138,7 +138,7 @@ class PlotDialog(QWidget):
         odo_long = [i for i in odo[:-1] for n in range(2)]
         
         fill_style = ['mountain', 'staircase']
-        background_fill = fill_style[1]
+        background_fill = fill_style[0]
         
         # make axes
         ax1 = self.figure.add_subplot(111)
@@ -212,6 +212,7 @@ class PlotDialog(QWidget):
             mns, sec = s_spl
         except ValueError:
             mns = s_spl[0]
+            sec = 0
             
         total = 60 * mns + sec
         

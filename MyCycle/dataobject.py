@@ -132,7 +132,7 @@ class Data:
         else:
             idx = key
         
-        col = [self.df[n][idx] for n in range(self.shape[1])]
+        col = [self.df[n][idx] for n in range(self.shape[0])]
             
         return col
     

@@ -12,7 +12,8 @@ from PyQt5.QtWidgets import (QAction, QApplication, QDesktopWidget,
 from dataobject import Data
 from editdialogs import AddLineDialog, RemoveLineDialog, EditLineDialog
 from plotdialog import PlotDialog
-from processcsv import csv_to_html  
+from processcsv import csv_to_html
+
     
 class MyCycle(QMainWindow):
     
@@ -24,7 +25,7 @@ class MyCycle(QMainWindow):
         
     def initUI(self):
         
-        self.data = Data('../data/me.csv')
+        self.data = Data('/home/keziah/python/cycling/mycycle/data/me.csv')
 
         self.textEdit = QTextEdit(readOnly=True)
         

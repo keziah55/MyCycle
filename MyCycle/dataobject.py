@@ -2,8 +2,6 @@
 Data object for MyCycle
 """
 
-import re   
-
 class Data:
     # separate class to handle all the data
     
@@ -14,52 +12,94 @@ class Data:
             
         self.csvfile = fname
         
-        # csv_data is a string containing all the data
+        self.col_names, self.df = self.read()
+        
+        
+    def read(self):
+        """ Read csv file and return list of headers and list of rows. """
+        
+        # read csv file
         with open(self.csvfile) as fileobj:
-            self.csv_data = fileobj.read()
+            csv_str = fileobj.read()
             
-        # make csv_data into a 'DataFrame' which is indexable etc.
-        self.get_df()
-            
-    def get_df(self):
-            
-        # csv_df is a list of strings and is the basis for regarding Data
-        # as a 2D array/DataFrame
-        self.csv_df = self.csv_data.split('\n')
-        self.csv_df = list(filter(None, self.csv_df))
+        # get list of rows (where each row is a string)
+        df = csv_str.split('\n')
+        df = list(filter(None, df))
         
-        header, *self.csv_df = self.csv_df
-        self.col_names = header.split(',')
+        # split column names from data
+        header, *df = df
+        # make list of headers
+        header = header.split(',')
         
-        self.types = self._get_types()
+        # make each row into a list
+        df = [df[n].split(',') for n in range(len(df))]
+        # get type for each item in a row
+        self.types = self._get_types(df[0])
+        
+        # cast every item in the frame as its appropriate type
+        for idx, row in enumerate(df):
+            for n in range(len(df[0])):
+                row[n] = self.types[n](row[n])
+                
+        return header, df
+        
+        
+    def save(self):
+        """ If csv data has been modifed, save the file. """
+        if self.modified:
+            csv_str = self.__str__()
+            with open(self.csvfile, 'w') as fileobj:
+                fileobj.write(csv_str)
+        
+        
+    def __str__(self):
+        
+        header = ','.join(self.col_names)
+        
+        # make list of strings
+        rows = []
+        for idx in range(self.__len__()):
+            row = self.getRow(idx)
+            row = list(map(str, row))
+            rows.append(','.join(row))
+            
+        # remove empty strings
+        rows = list(filter(None, rows))
+        rows = '\n'.join(rows)
+        
+        frame = header + '\n' + rows
+        
+        # return string
+        return frame
+    
+    
+    def __repr__(self):
+        return self.__str__()
+            
         
     @property
     def columns(self):
         return self.col_names
        
+        
     def __len__(self):
-        return len(self.csv_df)
+        return len(self.df)
+    
+    
+    @property
+    def shape(self):
+        return self.__len__(), len(self.columns)
+    
     
     def __setitem__(self, key, value):
         
         if not isinstance(key, tuple):
             raise ValueError('Indices should be tuple')
         else:
-            row = self.getRow(key[0])
-            
-            old_row = list(map(str, row))
-            old_row = ','.join(old_row)
-            
-            new_row = row
-            new_row[key[1]] = value
-            
-            new_row = list(map(str, new_row))
-            new_row = ','.join(new_row)
-            
-            self.csv_data = re.sub(old_row, new_row, self.csv_data)
-            
+            idx0, idx1 = key
+            self.df[idx0][idx1] = value
             self.modified = True
-            self.get_df()
+
     
     def __getitem__(self, key):
         
@@ -67,6 +107,7 @@ class Data:
             return self._getItemTuple(key)
         else:
             return self.getRow(key)
+    
     
     def _getItemTuple(self, tup):
         
@@ -79,10 +120,48 @@ class Data:
             
         return row[idx]
     
-    def _get_types(self):
+    
+    def getRow(self, idx):
+        return self.df[idx]
+    
+    
+    def getColumn(self, key):
         
-        row = self.csv_df[0]
-        row = row.split(',')
+        if isinstance(key, str):
+            idx = self.col_names.index(key)
+        else:
+            idx = key
+        
+        col = [self.df[n][idx] for n in range(self.shape[0])]
+            
+        return col
+    
+                
+    def addRow(self, row):
+        """ Add new row to Data. """
+        
+        if len(row) != self.shape[1]:
+            raise ValueError('New row should have {} elements'
+                             .format(self.shape[1]))
+        else:
+            # type cast new row
+            row = [self.types[n](row[n]) for n in range(self.shape[1])]
+            self.df.append(row)
+            self.modified = True
+        
+        
+    def removeRow(self, idx):
+        """ Remove row from Data. """
+        try:
+            del self.df[idx]
+            self.modified = True
+        except IndexError:
+            raise IndexError
+        
+    
+    def _get_types(self, row):
+        
+        # get type of each item in row
         types = []
         
         for item in row:
@@ -96,45 +175,11 @@ class Data:
                 except ValueError:
                     types.append(str)
                 
-        return types
-        
-    def getRow(self, idx):
-        row = self.csv_df[idx].split(',')
-        row = [self.types[n](row[n]) for n in range(len(self.types))]
-        return row
+        return tuple(types)
     
-    def getColumn(self, key):
-        
-        if isinstance(key, str):
-            idx = self.col_names.index(key)
-        else:
-            idx = key
-        
-        col = []
-        for line in self.csv_df:
-            csv = line.split(',')
-            col.append(csv[idx])
-            
-        col = list(map(self.types[idx], col))
-            
-        return col
-                
-    def add_new(self, new_data):
-        """ Add new line to csv. """
-        self.csv_data += new_data
-        self.modified = True
-        self.get_df()
-        
-    def remove_line(self, idx):
-        row = self.csv_df[idx]
-        self.csv_data = re.sub(row, '', self.csv_data)
-        self.modified = True
-        self.get_df()
-        
-    def save(self):
-        # save csv file
-        if self.modified:
-            with open(self.csvfile, 'w') as fileobj:
-                fileobj.write(self.csv_data)
-            
-        return True
+    
+if __name__ == '__main__':
+    
+    fname = '../data/me.csv'
+    data = Data(fname)
+    

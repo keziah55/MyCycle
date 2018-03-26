@@ -28,7 +28,7 @@ class MyCycle(QMainWindow):
         
     def initUI(self):
         
-        self.data = Data(os.path.join(home, '.mycycle', 'me.csv'))
+        self.data = Data(os.path.join(home, '.mycycle', 'mycycle.csv'))
 
         self.textEdit = QTextEdit(readOnly=True)
         

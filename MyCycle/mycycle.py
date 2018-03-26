@@ -24,7 +24,7 @@ class MyCycle(QMainWindow):
         
     def initUI(self):
         
-        self.data = Data('../data/me.csv')
+        self.data = Data('/home/keziah/python/cycling/mycycle/data/me.csv')
 
         self.textEdit = QTextEdit(readOnly=True)
         

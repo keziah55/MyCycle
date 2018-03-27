@@ -120,8 +120,9 @@ class PlotDialog(QWidget):
         time_sec = np.array(list(self._minsec_to_sec(time) 
                             for time in self.data.getColumn('Time')))
         
-        dist_norm = np.array(list(self._normalise(
-                                    time_sec[n], self.data[n,'Distance (km)']) 
+        dist_norm = np.array(list(self._normalise(time_sec[n], 
+                                                  self.data[n,'Distance (km)'],
+                                                  wrt='hr') 
                              for n in range(dflen)))
             
         cal_norm = np.array(list(self._normalise(time_sec[n], 
@@ -171,7 +172,7 @@ class PlotDialog(QWidget):
         
         # ax1 y data
         ax1.plot_date(dates, dist_norm, color=ax1_col, marker='x')
-        ax1.set_ylabel('Distance per minute (km/min)', color=ax1_col)
+        ax1.set_ylabel('Avg. speed (km/h)', color=ax1_col)
         ax1.tick_params('y', color=ax1_col, labelcolor=ax1_col)
         
         # ax2 y data
@@ -219,8 +220,13 @@ class PlotDialog(QWidget):
         return total
     
     
-    def _normalise(self, time, value):
-        # Normalise a value wrt time
+    def _normalise(self, time, value, wrt='min'):
+        # Normalise a value 
         # `time` should be in seconds
-        return 60 * value / time
-    
+        # `wrt` should be 'sec', 'min' or 'hr'
+        
+        factor = {'sec':1, 'min':60, 'hr':3600}
+        
+        mult = factor[wrt]
+        
+        return mult * value / time

@@ -315,7 +315,10 @@ class RemoveLineDialog(TableLineDiaolg):
         rows = list(set(item.row() for item in self.selected))
         rows.sort(reverse=True)
         
+        print(rows)
+        
         for idx in rows:
+            print(idx)
             idx = self.nrows - idx - 1
             self.data.removeRow(idx)
 

@@ -68,17 +68,12 @@ class AddLineDialog(QDialog_CTRL_Q):
         # get number of columns
         self.ncols = len(labels)
         
-        editButtonSize = 65
+        editButtonSize = 80
         
         newButton = QPushButton(QIcon.fromTheme('list-add'), '')
         newButton.setMinimumWidth(editButtonSize)
         newButton.setShortcut("CTRL+N")
         newButton.clicked.connect(self.addLine)
-        
-        rmvButton = QPushButton(QIcon.fromTheme('list-remove'), '')
-        rmvButton.setMinimumWidth(editButtonSize)
-        rmvButton.setShortcut("CTRL+R")
-        rmvButton.clicked.connect(self.rmvLine)
 
         buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | 
                                      QDialogButtonBox.Cancel)
@@ -94,12 +89,11 @@ class AddLineDialog(QDialog_CTRL_Q):
         # make HBoxLayout and add the buttons
         dialogBtnBox = QHBoxLayout()
         dialogBtnBox.addWidget(newButton)
-        dialogBtnBox.addWidget(rmvButton)
         dialogBtnBox.addWidget(buttonBox)
         
         # put the HBox in the GroupBox
         groupBoxBtn.setLayout(dialogBtnBox)
-        groupBoxBtn.setFixedSize(330,50)
+        groupBoxBtn.setFixedSize(270,50)
         
         # make GroupBox for the line labels and edit boxes
         groupBoxEdit = QGroupBox()
@@ -163,36 +157,6 @@ class AddLineDialog(QDialog_CTRL_Q):
         for n in range(self.ncols):
             self.editGrid.addWidget(fields[n], self.row, n)
         
-#        print('Add: {}, {}'.format(*self.shape))
-        
-        
-    def rmvLine(self):
-        
-        if self.row > 1:
-        
-            for col in range(self.ncols):
-                item = self.editGrid.itemAtPosition(self.row, col)
-                widget = item.widget()
-                print(widget.text())
-                self.editGrid.removeWidget(widget)
-                
-            self.row -= 1
-            
-            del self.rows[-1]
-            
-            lineHeight = widget.size().height()
-            
-            width, height = self.shape
-            
-            self.resize(width, height-lineHeight)
-            
-#            print('Rmv: {}, {}'.format(*self.shape))
-            
-        else:
-            title = 'Could not remove line'
-            message = 'There are no more lines to remove!' 
-            QMessageBox.warning(self, title, message)
-            
         
     def set_new_values(self):
         """ Put new csv data into Data object. """
@@ -206,25 +170,22 @@ class AddLineDialog(QDialog_CTRL_Q):
             
             line = [field.text() for field in row]
             
-            # format date and duration
-            # catch any exception thrown if the value entered cannot be parsed
-            try:
-                line[0] = str(str_to_date(line[0]))
-            except ValueError:
-                self.invalid_value_message(line[0])
-                error = True
-                
-            try:
-                line[1] = format_duration(line[1])
-            except ValueError:
-                self.invalid_value_message(line[1])
-                error = True
+            if '' not in line:
             
-            try:
-                new_rows.append(line)
-            except TypeError:
-                self.empty_value_message(line)
-            
+                # format date and duration
+                # catch any exception thrown if the value entered cannot be parsed
+                try:
+                    line[0] = str(str_to_date(line[0]))
+                except ValueError:
+                    self.invalid_value_message(line[0])
+                    error = True
+                    
+                try:
+                    line[1] = format_duration(line[1])
+                except ValueError:
+                    self.invalid_value_message(line[1])
+                    error = True
+                    
         if not error:
             for row in new_rows:
                 self.data.addRow(row)

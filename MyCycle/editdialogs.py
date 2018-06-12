@@ -186,6 +186,8 @@ class AddLineDialog(QDialog_CTRL_Q):
                     self.invalid_value_message(line[1])
                     error = True
                     
+                new_rows.append(line)
+                    
         if not error:
             for row in new_rows:
                 self.data.addRow(row)
@@ -313,12 +315,9 @@ class RemoveLineDialog(TableLineDiaolg):
         self.selected = self.table.selectedItems()
         
         rows = list(set(item.row() for item in self.selected))
-        rows.sort(reverse=True)
-        
-        print(rows)
+        rows.sort()
         
         for idx in rows:
-            print(idx)
             idx = self.nrows - idx - 1
             self.data.removeRow(idx)
 

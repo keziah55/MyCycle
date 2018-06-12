@@ -5,6 +5,7 @@ Edit my cycling data
 """
 
 import sys
+import os.path
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import (QAction, QApplication, QDesktopWidget, 
                              QMainWindow, QMessageBox, QTextEdit)
@@ -12,7 +13,9 @@ from PyQt5.QtWidgets import (QAction, QApplication, QDesktopWidget,
 from dataobject import Data
 from editdialogs import AddLineDialog, RemoveLineDialog, EditLineDialog
 from plotdialog import PlotDialog
-from processcsv import csv_to_html
+from processcsv import csv_to_html  
+
+home = os.path.expanduser('~')
 
     
 class MyCycle(QMainWindow):
@@ -24,8 +27,8 @@ class MyCycle(QMainWindow):
         self.initUI()
         
     def initUI(self):
-        
-        self.data = Data('/home/keziah/python/cycling/mycycle/data/me.csv')
+
+        self.data = Data(os.path.join(home, '.mycycle', 'mycycle.csv'))
 
         self.textEdit = QTextEdit(readOnly=True)
         

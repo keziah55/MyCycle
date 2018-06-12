@@ -2,6 +2,8 @@
 Data object for MyCycle
 """
 
+import os.path
+
 class Data:
     # separate class to handle all the data
     
@@ -10,9 +12,24 @@ class Data:
         
         self.modified = False
             
-        self.csvfile = fname
+        try:
+            self.csv_exists(fname)
+            self.csvfile = fname
+        except:
+            raise Exception('mycycle.csv does not exist and could not make it.')
         
         self.col_names, self.df = self.read()
+        
+        
+    @staticmethod
+    def csv_exists(fname):
+        
+        if not os.path.exists(fname):
+            header = 'Date,Time,Distance (km),Calories,Odometer (km)\n'
+            with open(fname, 'w') as fileobj:
+                fileobj.write(header)
+                
+        return True
         
         
     def read(self):
@@ -31,16 +48,22 @@ class Data:
         # make list of headers
         header = header.split(',')
         
-        # make each row into a list
-        df = [df[n].split(',') for n in range(len(df))]
-        # get type for each item in a row
-        self.types = self._get_types(df[0])
-        
-        # cast every item in the frame as its appropriate type
-        for idx, row in enumerate(df):
-            for n in range(len(df[0])):
-                row[n] = self.types[n](row[n])
+        if df:
+            # make each row into a list
+            df = [df[n].split(',') for n in range(len(df))]
+            # get type for each item in a row
+            self.types = self._get_types(df[0])
+            
+            # cast every item in the frame as its appropriate type
+            for idx, row in enumerate(df):
+                for n in range(len(df[0])):
+                    row[n] = self.types[n](row[n])
                 
+        else:
+            # there is no data yet
+            # and self.types hasn't been initialised
+            self.types = None
+            
         return header, df
         
         
@@ -144,6 +167,9 @@ class Data:
             raise ValueError('New row should have {} elements'
                              .format(self.shape[1]))
         else:
+            # if we started with an empty csv file, get the types now
+            if self.types is None:
+                self.types = self._get_types(row)
             # type cast new row
             row = [self.types[n](row[n]) for n in range(self.shape[1])]
             self.df.append(row)

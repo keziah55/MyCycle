@@ -80,6 +80,8 @@ class PlotDialog(QWidget):
         self.resize(650,650)
         self.centre()
         
+        self.setWindowTitle('Plot stats')
+        
         self.exitAct = QAction("E&xit", self, 
                                shortcut=QKeySequence(Qt.CTRL + Qt.Key_Q),
                                statusTip="Exit the application", 
@@ -230,4 +232,4 @@ class PlotDialog(QWidget):
         mult = factor[wrt]
         
         return mult * value / time
-    
+

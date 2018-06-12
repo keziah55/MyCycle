@@ -16,7 +16,7 @@ class Data:
             self.csv_exists(fname)
             self.csvfile = fname
         except:
-            raise Exception('me.csv does not exist and could not make it.')
+            raise Exception('mycycle.csv does not exist and could not make it.')
         
         self.col_names, self.df = self.read()
         

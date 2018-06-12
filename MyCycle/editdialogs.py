@@ -1,6 +1,6 @@
 """ 
-Dialogs required by Timesheet when adding or removing data.
-Supplies AddLineDialog, NewRateDialog, and RemoveLineDialog.
+Dialogs required by MyCycle when adding, removing or editing data.
+Supplies AddLineDialog, RemoveLineDialog, and EditLineDialog.
 """
 
 from PyQt5.QtGui import QIcon

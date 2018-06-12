@@ -1,3 +1,7 @@
+"""
+Provides functions to read csv data and supply it in html format for MyCycle
+"""
+
 import calendar
 import re
 import itertools

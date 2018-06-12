@@ -203,9 +203,3 @@ class Data:
                 
         return tuple(types)
     
-    
-if __name__ == '__main__':
-    
-    fname = '../data/me.csv'
-    data = Data(fname)
-    

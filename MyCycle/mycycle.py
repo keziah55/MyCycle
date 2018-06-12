@@ -9,7 +9,6 @@ import os.path
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import (QAction, QApplication, QDesktopWidget, 
                              QMainWindow, QMessageBox, QTextEdit)
-
 from dataobject import Data
 from editdialogs import AddLineDialog, RemoveLineDialog, EditLineDialog
 from plotdialog import PlotDialog
@@ -60,9 +59,7 @@ class MyCycle(QMainWindow):
         
     def update_display(self):
         """ Update text and window title """
-#        print('update_display')
         self.textEdit.setHtml(csv_to_html(str(self.data)))
-#        print(self.data.csv_data)
         if self.data.modified:
             self.statusBar().showMessage('Updated', self.statTimeout)
             
@@ -174,7 +171,6 @@ class MyCycle(QMainWindow):
         
         self.editToolBar = self.addToolBar("Edit")
         self.editToolBar.addAction(self.addAct)
-#        self.editToolBar.addAction(self.rmvAct)
     
 
 if __name__ == '__main__':

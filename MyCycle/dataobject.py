@@ -99,20 +99,19 @@ class Data:
     def __repr__(self):
         return self.__str__()
             
-        
     @property
     def columns(self):
         return self.col_names
-       
         
     def __len__(self):
         return len(self.df)
-    
     
     @property
     def shape(self):
         return self.__len__(), len(self.columns)
     
+    def getRow(self, idx):
+        return self.df[idx]
     
     def __setitem__(self, key, value):
         
@@ -130,8 +129,8 @@ class Data:
             return self._getItemTuple(key)
         else:
             return self.getRow(key)
-    
-    
+        
+
     def _getItemTuple(self, tup):
         
         row = self.getRow(tup[0])
@@ -142,10 +141,6 @@ class Data:
             idx = tup[1]
             
         return row[idx]
-    
-    
-    def getRow(self, idx):
-        return self.df[idx]
     
     
     def getColumn(self, key):

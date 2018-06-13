@@ -170,7 +170,7 @@ class AddLineDialog(QDialog_CTRL_Q):
             
             line = [field.text() for field in row]
             
-            if '' not in line:
+            if self.isvalid(line):
             
                 # format date and duration
                 # catch any exception thrown if the value entered cannot be parsed
@@ -187,11 +187,21 @@ class AddLineDialog(QDialog_CTRL_Q):
                     error = True
                     
                 new_rows.append(line)
+                
+            else:
+                self.empty_value_message(line)
                     
         if not error:
             for row in new_rows:
                 self.data.addRow(row)
             self.accept()
+            
+    @staticmethod
+    def isvalid(line):
+        for item in line:
+            if not item.strip():
+                return False
+        return True
         
     def empty_value_message(self, line):
         title = 'Could not add line!'

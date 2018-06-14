@@ -270,7 +270,7 @@ class TableLineDiaolg(QDialog_CTRL_Q):
         # it should be
         # and just using ncols * columnWidth puts a scrollbar on the bottom,
         # which is annoying, so I've widened it slightly
-        width = (self.ncols + 0.05) * self.table.columnWidth(0)
+        width = (self.ncols + 0.25) * self.table.columnWidth(0)
         
         # exaplin how this window works
         # self.explain.setText() should be applied in the derived classes

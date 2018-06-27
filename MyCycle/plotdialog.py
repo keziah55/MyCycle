@@ -205,8 +205,8 @@ class PlotDialog(QWidget):
         # refresh canvas
         self.canvas.draw()
             
-               
-    def _minsec_to_sec(self, s):
+    @staticmethod
+    def _minsec_to_sec(s):
         
         s_spl = s.split(':')
         s_spl = list(map(int, s_spl))
@@ -221,8 +221,8 @@ class PlotDialog(QWidget):
         
         return total
     
-    
-    def _normalise(self, time, value, wrt='min'):
+    @staticmethod
+    def _normalise(time, value, wrt='min'):
         # Normalise a value 
         # `time` should be in seconds
         # `wrt` should be 'sec', 'min' or 'hr'

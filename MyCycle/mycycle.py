@@ -6,13 +6,16 @@ Edit my cycling data
 
 import sys
 import os.path
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QKeySequence
-from PyQt5.QtWidgets import (QAction, QApplication, QDesktopWidget, 
-                             QMainWindow, QMessageBox, QTextEdit)
+from PyQt5.QtWidgets import (QAction, QApplication, QDesktopWidget, QHBoxLayout,
+                             QMainWindow, QMenuBar, QMessageBox, QTextEdit, 
+                             QToolBar)
 from dataobject import Data
+from centralwidget import CentralWidget
 from editdialogs import AddLineDialog, RemoveLineDialog, EditLineDialog
 from plotdialog import PlotDialog
-from processcsv import csv_to_html  
+ 
 
 home = os.path.expanduser('~')
 
@@ -31,10 +34,14 @@ class MyCycle(QMainWindow):
 
         self.textEdit = QTextEdit(readOnly=True)
         
+        self.cw = CentralWidget(self.data)
+        
         # display text (as html)
         self.update_display()
 
-        self.setCentralWidget(self.textEdit)
+        self.setCentralWidget(self.cw)# self.textEdit)
+        
+        self.hbox = QHBoxLayout()
 
         self.createActions()
         self.createMenus()
@@ -59,7 +66,8 @@ class MyCycle(QMainWindow):
         
     def update_display(self):
         """ Update text and window title """
-        self.textEdit.setHtml(csv_to_html(str(self.data)))
+        self.cw.setHtml()#str(self.data))
+        self.cw.setPB()
         if self.data.modified:
             self.statusBar().showMessage('Updated', self.statTimeout)
             
@@ -162,6 +170,7 @@ class MyCycle(QMainWindow):
 
         self.helpMenu = self.menuBar().addMenu("&Help")
         self.helpMenu.addAction(self.abtAct)
+
 
     def createToolBars(self):
         

@@ -198,3 +198,78 @@ class Data:
                 
         return tuple(types)
     
+    
+    def where(self, column, condition, mode):
+        """ Analyse Data object and return where a condition is met
+        
+            Parameters
+            ----------
+            column : str or index
+                column to be analysed
+            condition : str
+                condition to be met (should evalute to True/False)
+                Please use 'data' to refer to the selected column
+            mode : {'idx', 'row'}
+                retun either the indices of rows where the condition is met
+                or the full row
+        """
+        
+        pass
+    
+    
+    def getMax(self, column, mode='row'):
+        """ Find max in given column
+        
+            Parameters
+            ----------
+            column : str or index
+                column to be analysed
+            mode : {'row', 'idx'}
+                return either the row containing the maximum or its index.
+                Default is 'row'.
+        """
+        
+        return self._getMinMax(data.getColumn(column), max, mode)
+        
+    
+    def getMin(self, column, mode='row'):
+        """ Find min in given column
+        
+            Parameters
+            ----------
+            column : str or index
+                column to be analysed
+            mode : {'idx', 'row'}
+                return either the row containing the minimum or its index.
+                Default is 'row'.
+        """
+        
+        return self._getMinMax(data.getColumn(column), min, mode)
+        
+    @staticmethod
+    def _getMinMax(col, which, mode):
+        
+        result = which(col)
+        
+        idx = col.index(result)
+        
+        if mode == 'idx':
+            return idx
+        else:
+            return data[idx]
+        
+        
+if __name__ == '__main__':
+    
+    from analysedata import *
+    
+    home = os.path.expanduser('~')
+    data = Data(os.path.join(home, '.mycycle', 'mycycle.csv'))
+    
+    best, when = get_best_session(data)
+    
+    print('PB: {:.3f}km/h achieved on {}'.format(best, when))
+    
+    best, when = get_best_month(data)
+    
+    print('Cycled {:.3f}km in {}'.format(best, when))

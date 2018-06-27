@@ -1,9 +1,5 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Created on Mon Jun 25 19:05:04 2018
-
-@author: keziah
+Provides functions to analyse a DataObject
 """
 
 from calendar import month_name

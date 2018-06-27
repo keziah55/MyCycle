@@ -20,6 +20,8 @@ class Data:
         
         self.col_names, self.df = self.read()
         
+        self.aliases = [item.lower() for item in self.col_names]
+        
         
     @staticmethod
     def csv_exists(fname):
@@ -134,25 +136,31 @@ class Data:
     def _getItemTuple(self, tup):
         
         row = self.getRow(tup[0])
-        
-        if isinstance(tup[1], str):
-            idx = self.col_names.index(tup[1])
-        else:
-            idx = tup[1]
+        idx = self._getColumnIndex(tup[1])
             
         return row[idx]
     
     
     def getColumn(self, key):
         
-        if isinstance(key, str):
-            idx = self.col_names.index(key)
-        else:
-            idx = key
-        
+        idx = self._getColumnIndex(key)
         col = [self.df[n][idx] for n in range(self.shape[0])]
             
         return col
+    
+    
+    def _getColumnIndex(self, key):
+        if isinstance(key, str):
+            try:
+                idx = self.col_names.index(key)
+            except ValueError:
+                try:
+                    idx = self.aliases.index(key)
+                except ValueError:
+                    raise ValueError("Index '{}' not recognised".format(key))
+        else:
+            idx = key
+        return idx
     
                 
     def addRow(self, row):
@@ -197,6 +205,18 @@ class Data:
                     types.append(str)
                 
         return tuple(types)
+    
+    
+    def setAlias(self, column, alias):
+        
+        if isinstance(column, int):
+            idx = column
+        elif isinstance(column, str):
+            idx = self.columns.index(column)
+        else:
+            raise ValueError
+            
+        self.aliases[idx] = alias
     
     
     def where(self, column, condition, mode):
@@ -261,15 +281,5 @@ class Data:
         
 if __name__ == '__main__':
     
-    from analysedata import *
-    
     home = os.path.expanduser('~')
     data = Data(os.path.join(home, '.mycycle', 'mycycle.csv'))
-    
-    best, when = get_best_session(data)
-    
-    print('PB: {:.3f}km/h achieved on {}'.format(best, when))
-    
-    best, when = get_best_month(data)
-    
-    print('Cycled {:.3f}km in {}'.format(best, when))

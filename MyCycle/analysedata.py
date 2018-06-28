@@ -15,8 +15,8 @@ def minsec_to_hr(s):
 
 
 def hr_to_hrminsec(f):
-    hr = _round(f)
-    mn = _round(60*(f%1))
+    hr = int(f)
+    mn = int(60*(f%1))
     sc = _round(60*((60*(f%1))%1))
     return '{}:{}.{}'.format(hr, mn, sc)
 

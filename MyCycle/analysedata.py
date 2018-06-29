@@ -73,6 +73,7 @@ def get_best_month(data):
     when = ''
     
     for month in months:
+        
         dist = sum([m[2] for m in month])
         
         if dist > best:
@@ -104,6 +105,8 @@ def split_by_month(data):
             result.append(this_month)
             this_month = [data[idx]]
             prev_month = month
+            
+    result.append(this_month)
             
     result.pop(0)
     

@@ -86,9 +86,9 @@ class CentralWidget(QWidget):
         
         best, when, time, cal = get_best_month(self.data)
         text = '{}: '.format(when)
-        text += bold(' {:.3f} km'.format(best)) 
+        text += bold(' {:.2f} km'.format(best)) 
         text += ', total time: ' + bold(time) 
-        text += ', calories: ' + bold(str(cal))
+        text += ', calories: ' + bold('{:.2f}'.format(cal))
         
         return text
     

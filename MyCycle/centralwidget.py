@@ -46,7 +46,7 @@ class CentralWidget(QWidget):
         layout.addWidget(self.ad)
         
         layout.setStretchFactor(self.pb, 1)
-        layout.setStretchFactor(self.ad, 3)
+        layout.setStretchFactor(self.ad, 2)
         
         self.setLayout(layout)
         
@@ -71,9 +71,15 @@ class CentralWidget(QWidget):
         pb_session = self.getPBsession()
         pb_month = self.getPBmonth()
         
-        text = '\n' + tag('b', 'Personal best') + '\n<br>\n'
-        text += pb_session + '\n<br>\n' + pb_month
-        text = tag('font', text, 'size=4')
+        best_session = tag('b', 'Best Session:')
+        best_session = tag('div', best_session, 'style="font-size:18px"')
+        
+        best_month = tag('b', 'Best Month:')
+        best_month = tag('div', best_month, 'style="font-size:18px"')
+        
+        text = '\n' + best_session# + '\n<br>\n'
+        text += tag('div', pb_session, 'style="font-size:16px"') #+ '\n<br>\n' 
+        text += best_month + tag('div', pb_month,  'style="font-size:16px"') 
         
         return text
         

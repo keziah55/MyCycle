@@ -111,9 +111,3 @@ def split_by_month(data):
     result.pop(0)
     
     return result
-
-
-
-    
-    
-    

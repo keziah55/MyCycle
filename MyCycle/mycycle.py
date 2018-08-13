@@ -6,11 +6,9 @@ Edit my cycling data
 
 import sys
 import os.path
-from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QKeySequence
-from PyQt5.QtWidgets import (QAction, QApplication, QDesktopWidget, QHBoxLayout,
-                             QMainWindow, QMenuBar, QMessageBox, QTextEdit, 
-                             QToolBar)
+from PyQt5.QtWidgets import (QAction, QApplication, QDesktopWidget,
+                             QMainWindow, QMessageBox)
 from dataobject import Data
 from centralwidget import CentralWidget
 from editdialogs import AddLineDialog, RemoveLineDialog, EditLineDialog
@@ -23,26 +21,21 @@ home = os.path.expanduser('~')
 class MyCycle(QMainWindow):
     
     def __init__(self):
-        
         super().__init__()
-        
         self.initUI()
         
     def initUI(self):
 
         self.data = Data(os.path.join(home, '.mycycle', 'mycycle.csv'))
 
-        self.textEdit = QTextEdit(readOnly=True)
-        
+        # central widget is two QTextEdits - personal best and all csv data
         self.cw = CentralWidget(self.data)
+        
+        self.setCentralWidget(self.cw)
         
         # display text (as html)
         self.update_display()
-
-        self.setCentralWidget(self.cw)# self.textEdit)
         
-        self.hbox = QHBoxLayout()
-
         self.createActions()
         self.createMenus()
         self.createToolBars()
@@ -66,8 +59,7 @@ class MyCycle(QMainWindow):
         
     def update_display(self):
         """ Update text and window title """
-        self.cw.setHtml()#str(self.data))
-        self.cw.setPB()
+        self.cw.setHtml()
         if self.data.modified:
             self.statusBar().showMessage('Updated', self.statTimeout)
             
@@ -78,7 +70,7 @@ class MyCycle(QMainWindow):
         self.pld.show()
         
     def getColourScheme(self):
-        """ Set light or dark colour scheme for plotData """
+        """ Set light or dark colour scheme for plotData. """
         
         system_theme = QIcon.themeName()
         if 'dark' in system_theme:

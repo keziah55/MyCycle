@@ -31,9 +31,7 @@ class CentralWidget(QWidget):
     
     def __init__(self, data):
         super().__init__()
-        
         self.initUI(data)
-        
         
     def initUI(self, data):   
         
@@ -44,25 +42,32 @@ class CentralWidget(QWidget):
         self.pb = QTextEdit(readOnly=True)
         self.ad = QTextEdit(readOnly=True)
         
-        self.pb.setFixedSize(500, 90)
-        
         layout.addWidget(self.pb)
         layout.addWidget(self.ad)
         
+        layout.setStretchFactor(self.pb, 1)
+        layout.setStretchFactor(self.ad, 3)
+        
         self.setLayout(layout)
-
+        
         
     def setHtml(self):
-        self.ad.setHtml(csv_to_html(str(self.data)))
+        """ Set text in both Personal Best and All CSV Data widgets. """
+        self.setCsvData()
+        self.setPB()
         
+    def setCsvData(self):
+        # set csv data QTextEdit
+        ad_text = csv_to_html(str(self.data))
+        self.ad.setHtml(ad_text)
         
     def setPB(self):
+        # set Personal Best QTextEdit
         pb_text = self.getPB()
         self.pb.setHtml(pb_text)
-        
-        
+
     def getPB(self):
-        
+        # get all Personal Best data
         pb_session = self.getPBsession()
         pb_month = self.getPBmonth()
         
@@ -72,18 +77,16 @@ class CentralWidget(QWidget):
         
         return text
         
-        
     def getPBsession(self):
-        
+        # get best session
         best, when = get_best_session(self.data)
         text = bold('{:.3f} km/h'.format(best))
         text += ' achieved on {}'.format(when)
         
         return text
-        
     
     def getPBmonth(self):
-        
+        # get best month
         best, when, time, cal = get_best_month(self.data)
         text = '{}: '.format(when)
         text += bold(' {:.2f} km'.format(best)) 

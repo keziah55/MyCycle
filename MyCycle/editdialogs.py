@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import (QAbstractItemView, QAction, QDialog,
 from str_to_date import str_to_date
 from format_dur import format_duration
 
-import abc
+from abc import abstractmethod
 
 datefmt = '%d %b %Y'
 
@@ -216,8 +216,6 @@ class AddLineDialog(QDialog_CTRL_Q):
 
 class TableLineDiaolg(QDialog_CTRL_Q):
     
-    __metaclass__ = abc.ABCMeta
-    
     def __init__(self, data):
         """ Base class for displaying the timesheet as a table for editing.
         
@@ -289,10 +287,10 @@ class TableLineDiaolg(QDialog_CTRL_Q):
         
         self.setWindowTitle('Table dialog')
     
-    @abc.abstractmethod    
+    @abstractmethod    
     def customise(self): pass
     
-    @abc.abstractmethod
+    @abstractmethod
     def apply_changes(self): pass
     
         

@@ -186,7 +186,7 @@ class PlotDialog(QWidget):
             ax2.plot_date(dates_long, odo_long, color=ax2_col1, marker='') 
             ax2.fill_between(dates_long, 0, odo_long, facecolor=ax2_col1)
             
-        ax2.set_ylim(ymin=75)
+        ax2.set_ylim(bottom=75)
         ax2.set_ylabel('Total distance (km)', color=ax2_col2)
         ax2.tick_params('y', colors=ax2_col2, labelcolor=ax2_col2)
         

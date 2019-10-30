@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import (QAbstractItemView, QAction, QDialog,
                              QHBoxLayout, QLabel, QLineEdit, 
                              QMessageBox, QPushButton, QTableWidget, 
                              QTableWidgetItem, QVBoxLayout)
+from metaclass import QtABCMeta
 
 from str_to_date import str_to_date
 from format_dur import format_duration
@@ -17,7 +18,7 @@ from abc import abstractmethod
 
 datefmt = '%d %b %Y'
 
-class QDialog_CTRL_Q(QDialog):
+class QDialog_CTRL_Q(QDialog, metaclass=QtABCMeta):
     """ QDialog subclass with CRTL+Q shortcut to close window.
     
         Standard QDialog close shortcut is ESC, which still applies here.
@@ -214,7 +215,7 @@ class AddLineDialog(QDialog_CTRL_Q):
         QMessageBox.warning(self, title, message)
 
 
-class TableLineDiaolg(QDialog_CTRL_Q):
+class TableLineDiaolg(QDialog_CTRL_Q, metaclass=QtABCMeta):
     
     def __init__(self, data):
         """ Base class for displaying the timesheet as a table for editing.

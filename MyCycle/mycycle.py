@@ -45,7 +45,7 @@ class MyCycle(QMainWindow):
         
         self.setWindowIcon(QIcon(''))  
         self.setWindowTitle('MyCycle')
-        self.resize(500, 500)
+        self.resize(700, 500)
         self.centre()
         
         self.show()
@@ -73,7 +73,7 @@ class MyCycle(QMainWindow):
         """ Set light or dark colour scheme for plotData. """
         
         system_theme = QIcon.themeName()
-        if 'dark' in system_theme:
+        if not system_theme or 'dark' in system_theme:
             scheme = 'dark'
         else:
             scheme = 'light'

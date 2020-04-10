@@ -179,14 +179,14 @@ class PlotDialog(QWidget):
         
         # ax2 y data
         if background_fill == 'mountain':
-            ax2.plot_date(dates, odo, color=ax2_col1, marker='') 
-            ax2.fill_between(dates, 0, odo, facecolor=ax2_col1)
+            ax2.plot_date(dates, odo, color=ax2_col1, marker='', xdate=True) 
+            ax2.fill_between(dates, odo, facecolor=ax2_col1)
         
         elif background_fill == 'staircase':
             ax2.plot_date(dates_long, odo_long, color=ax2_col1, marker='') 
             ax2.fill_between(dates_long, 0, odo_long, facecolor=ax2_col1)
             
-        ax2.set_ylim(bottom=75)
+#        ax2.set_ylim(bottom=75)
         ax2.set_ylabel('Total distance (km)', color=ax2_col2)
         ax2.tick_params('y', colors=ax2_col2, labelcolor=ax2_col2)
         

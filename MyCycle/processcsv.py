@@ -117,7 +117,7 @@ def csv_to_html(text):
             
             # groups[idx] =  month, date, time, dist, cal, odo, time_sec
             
-            total_time = sum(groups[idx][n][6] for n in range(len(groups[idx])))
+            total_time = sum(groups[idx][n][-1] for n in range(len(groups[idx])))
             total_time = get_hr_min_sec(total_time)
             
             total_cal = sum(groups[idx][n][4] for n in range(len(groups[idx])))
@@ -138,7 +138,7 @@ def csv_to_html(text):
 def _parse_line(line):
     """ Take line from csv and extract/reformat where necessary."""
     
-    date, time, dist, cal, odo = re.split(',', line.strip())
+    date, time, dist, cal, odo, gear, weight = re.split(',', line.strip())
     
     # date is in YYYY-MM-DD order, want DD Month YY, where Month is abbreviation
     date_list = re.split('-', date)
@@ -170,7 +170,7 @@ def _parse_line(line):
     dist, cal, odo = list(map(float, [dist, cal, odo]))
     
     
-    return [month, date, time, dist, cal, odo, time_sec]
+    return [month, date, time, dist, cal, odo, gear, weight, time_sec]
 
         
 def _read_csv(text):
@@ -256,17 +256,21 @@ def get_table(data):
     table_head = '''
 <table>
     <tr>
-        <th width=20%>Date</th>
-        <th width=20%>Time</th>
-        <th width=20%>Distance (km)</th>
-        <th width=20%>Calories</th>
-        <th width=20%>Odometer (km)</th>
+        <th width=14.25%>Date</th>
+        <th width=14.25%>Time</th>
+        <th width=14.25%>Distance (km)</th>
+        <th width=14.25%>Calories</th>
+        <th width=14.25%>Odometer (km)</th>
+        <th width=14.25%>Gear</th>
+        <th width=14.25%>Weight (kg)</th>
     </tr>'''
     
     table_body = ''
     for row in data:
         table_body += '''
         <tr>
+            <td>{}</td>
+            <td>{}</td>
             <td>{}</td>
             <td>{}</td>
             <td>{}</td>

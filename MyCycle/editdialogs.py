@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (QAbstractItemView, QAction, QDialog,
                              QDialogButtonBox, QGridLayout, QGroupBox, 
                              QHBoxLayout, QLabel, QLineEdit, 
                              QMessageBox, QPushButton, QTableWidget, 
-                             QTableWidgetItem, QVBoxLayout)
+                             QTableWidgetItem, QVBoxLayout, QSizePolicy)
 from metaclass import QtABCMeta
 
 from str_to_date import str_to_date
@@ -78,7 +78,6 @@ class AddLineDialog(QDialog_CTRL_Q):
 
         buttonBox = QDialogButtonBox(QDialogButtonBox.Ok | 
                                      QDialogButtonBox.Cancel)
-
         buttonBox.accepted.connect(self.set_new_values)
         buttonBox.rejected.connect(self.reject)
         
@@ -91,10 +90,12 @@ class AddLineDialog(QDialog_CTRL_Q):
         dialogBtnBox = QHBoxLayout()
         dialogBtnBox.addWidget(newButton)
         dialogBtnBox.addWidget(buttonBox)
+        dialogBtnBox.addStretch(1)
         
         # put the HBox in the GroupBox
         groupBoxBtn.setLayout(dialogBtnBox)
-        groupBoxBtn.setFixedSize(270,50)
+#        groupBoxBtn.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Preferred)
+#        groupBoxBtn.setFixedSize(270,50)
         
         # make GroupBox for the line labels and edit boxes
         groupBoxEdit = QGroupBox()
@@ -124,7 +125,7 @@ class AddLineDialog(QDialog_CTRL_Q):
         # set the VBox as the layout
         self.setLayout(layout)
         
-        self.resize(570, 130)
+        self.resize(700, 180)
         self.setWindowTitle('Add data')
         
 

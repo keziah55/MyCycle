@@ -57,7 +57,7 @@ class PlotDialog(QWidget):
         schemeBtnBox.addWidget(schemeBtn2)
         
         groupBoxRadio.setLayout(schemeBtnBox)
-        groupBoxRadio.setFixedSize(180,35)
+#        groupBoxRadio.setFixedSize(180,35)
         
         self.exportBtn = QPushButton("&Export pdf")
         self.exportBtn.setShortcut(QKeySequence(Qt.CTRL + Qt.Key_E))
@@ -66,9 +66,10 @@ class PlotDialog(QWidget):
         allBox = QHBoxLayout()
         allBox.addWidget(groupBoxRadio)
         allBox.addWidget(self.exportBtn)
+        allBox.addStretch(1)
         
         groupBox.setLayout(allBox)
-        groupBox.setFixedSize(300,50)
+#        groupBox.setFixedSize(300,50)
 
         # set the layout
         layout = QVBoxLayout()

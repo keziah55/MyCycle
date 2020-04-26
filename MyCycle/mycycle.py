@@ -45,7 +45,7 @@ class MyCycle(QMainWindow):
         
         self.setWindowIcon(QIcon(''))  
         self.setWindowTitle('MyCycle')
-        self.resize(700, 500)
+        self.resize(700, 700)
         self.centre()
         
         self.show()

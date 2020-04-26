@@ -3,6 +3,9 @@ Provides functions to analyse a DataObject
 """
 
 from calendar import month_name
+from datetime import datetime, date
+from itertools import groupby, count
+datefmt = '%d %b %Y'
 
 def _round(n):
     return int(round(n))
@@ -88,7 +91,19 @@ def get_best_month(data):
             cal = sum([m[3] for m in month])
     
     return best, when, time, cal
+
+
+def get_best_days(data):
     
+    fmt = '%Y-%m-%d'
+    days = [datetime.strptime(d[0], fmt).toordinal() for d in data]
+    c = count()
+    days = max((list(g) for _, g in groupby(days, lambda x: x-next(c))), key=len)
+    days = [date.fromordinal(d) for d in days]
+    duration = len(days)
+    first, last = (days[i].strftime(datefmt) for i in [0, -1])
+    return duration, first, last
+        
 
 def split_by_month(data):
     

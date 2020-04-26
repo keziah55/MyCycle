@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (QAbstractItemView, QAction, QDialog,
                              QDialogButtonBox, QGridLayout, QGroupBox, 
                              QHBoxLayout, QLabel, QLineEdit, 
                              QMessageBox, QPushButton, QTableWidget, 
-                             QTableWidgetItem, QVBoxLayout, QSizePolicy)
+                             QTableWidgetItem, QVBoxLayout)
 from metaclass import QtABCMeta
 
 from str_to_date import str_to_date
@@ -94,8 +94,6 @@ class AddLineDialog(QDialog_CTRL_Q):
         
         # put the HBox in the GroupBox
         groupBoxBtn.setLayout(dialogBtnBox)
-#        groupBoxBtn.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Preferred)
-#        groupBoxBtn.setFixedSize(270,50)
         
         # make GroupBox for the line labels and edit boxes
         groupBoxEdit = QGroupBox()

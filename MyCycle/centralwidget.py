@@ -3,9 +3,9 @@ Make single widget containing personal best and csv data QTextEdits.
 This widget will be set as the main window's central widget.
 """
 
-from PyQt5.QtWidgets import (QTextEdit, QWidget, QVBoxLayout)
+from PyQt5.QtWidgets import (QTextEdit, QWidget, QVBoxLayout, QSizePolicy)
 from processcsv import csv_to_html 
-from analysedata import get_best_session, get_best_month
+from analysedata import get_best_session, get_best_month, get_best_days
 
 
 def tag(tag, s, attr=''):
@@ -42,11 +42,14 @@ class CentralWidget(QWidget):
         self.pb = QTextEdit(readOnly=True)
         self.ad = QTextEdit(readOnly=True)
         
+        self.pb.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+        self.ad.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        
         layout.addWidget(self.pb)
         layout.addWidget(self.ad)
         
-        layout.setStretchFactor(self.pb, 1)
-        layout.setStretchFactor(self.ad, 2)
+#        layout.setStretchFactor(self.pb, 1)
+#        layout.setStretchFactor(self.ad, 2)
         
         self.setLayout(layout)
         
@@ -70,6 +73,7 @@ class CentralWidget(QWidget):
         # get all Personal Best data
         pb_session = self.getPBsession()
         pb_month = self.getPBmonth()
+        pb_days = self.getPBdays()
         
         best_session = tag('b', 'Best Session:')
         best_session = tag('div', best_session, 'style="font-size:18px"')
@@ -77,9 +81,13 @@ class CentralWidget(QWidget):
         best_month = tag('b', 'Best Month:')
         best_month = tag('div', best_month, 'style="font-size:18px"')
         
+        best_days = tag('b', 'Longest streak:')
+        best_days = tag('div', best_days, 'style="font-size:18px"')
+        
         text = '\n' + best_session# + '\n<br>\n'
         text += tag('div', pb_session, 'style="font-size:16px"') #+ '\n<br>\n' 
-        text += best_month + tag('div', pb_month,  'style="font-size:16px"') 
+        text += best_month + tag('div', pb_month, 'style="font-size:16px"') 
+        text += best_days + tag('div', pb_days, 'style="font-size:16px"')
         
         return text
         
@@ -94,10 +102,17 @@ class CentralWidget(QWidget):
     def getPBmonth(self):
         # get best month
         best, when, time, cal = get_best_month(self.data)
-        text = '{}: '.format(when)
-        text += bold(' {:.2f} km'.format(best)) 
+        text = f'{when}: '
+        text += bold(f' {best:.2f} km') 
         text += ', total time: ' + bold(time) 
-        text += ', calories: ' + bold('{:.2f}'.format(cal))
+        text += ', calories: ' + bold(f'{cal:.2f}')
         
         return text
     
+    def getPBdays(self):
+        n, first, last = get_best_days(self.data)
+        text = bold(f'{n} days') 
+        text += f', from {first} to {last}'
+        return text
+        
+        

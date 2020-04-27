@@ -7,16 +7,13 @@ Edit my cycling data
 import sys
 import os.path
 from PyQt5.QtGui import QIcon, QKeySequence
-from PyQt5.QtWidgets import (QAction, QApplication, QDesktopWidget,
-                             QMainWindow, QMessageBox)
+from PyQt5.QtWidgets import (QAction, QDesktopWidget, QMainWindow, QMessageBox, QApplication)
 from dataobject import Data
 from centralwidget import CentralWidget
 from editdialogs import AddLineDialog, RemoveLineDialog, EditLineDialog
 from plotdialog import PlotDialog
- 
 
 home = os.path.expanduser('~')
-
     
 class MyCycle(QMainWindow):
     
@@ -173,9 +170,8 @@ class MyCycle(QMainWindow):
         self.editToolBar = self.addToolBar("Edit")
         self.editToolBar.addAction(self.addAct)
     
-
-if __name__ == '__main__':
     
+if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = MyCycle()
     sys.exit(app.exec_())

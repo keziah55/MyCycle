@@ -9,7 +9,7 @@ import os.path
 from PyQt5.QtGui import QIcon, QKeySequence
 from PyQt5.QtWidgets import (QAction, QDesktopWidget, QMainWindow, QMessageBox, QApplication)
 from dataobject import Data
-from centralwidget import CentralWidget
+from centralwidget import DataWidget
 from editdialogs import AddLineDialog, RemoveLineDialog, EditLineDialog
 from plotdialog import PlotDialog
 
@@ -26,7 +26,7 @@ class MyCycle(QMainWindow):
         self.data = Data(os.path.join(home, '.mycycle', 'mycycle.csv'))
 
         # central widget is two QTextEdits - personal best and all csv data
-        self.cw = CentralWidget(self.data)
+        self.cw = DataWidget(self.data)
         
         self.setCentralWidget(self.cw)
         

@@ -3,7 +3,8 @@ Make single widget containing personal best and csv data QTextEdits.
 This widget will be set as the main window's central widget.
 """
 
-from PyQt5.QtWidgets import (QTextEdit, QWidget, QVBoxLayout, QSizePolicy)
+from PyQt5.QtWidgets import (QTextEdit, QWidget, QVBoxLayout, QSizePolicy,
+                             QMessageBox)
 from processcsv import csv_to_html 
 from analysedata import get_best_session, get_best_month, get_best_days
 
@@ -27,7 +28,7 @@ def bold(s):
     return tag('b', s)
 
 
-class CentralWidget(QWidget):
+class DataWidget(QWidget):
     
     def __init__(self, data):
         super().__init__()
@@ -48,10 +49,11 @@ class CentralWidget(QWidget):
         layout.addWidget(self.pb)
         layout.addWidget(self.ad)
         
-#        layout.setStretchFactor(self.pb, 1)
-#        layout.setStretchFactor(self.ad, 2)
-        
         self.setLayout(layout)
+        
+        self.pb_session, _ = self.getPBsession()
+        self.pb_month, _ = self.getPBmonth()
+        self.pb_days, _ = self.getPBdays()
         
         
     def setHtml(self):
@@ -72,9 +74,9 @@ class CentralWidget(QWidget):
 
     def getPB(self):
         # get all Personal Best data
-        pb_session = self.getPBsession()
-        pb_month = self.getPBmonth()
-        pb_days = self.getPBdays()
+        pb_session, pb_session_text = self.getPBsession()
+        pb_month, pb_month_text = self.getPBmonth()
+        pb_days, pb_days_text = self.getPBdays()
         
         best_session = tag('b', 'Best Session:')
         best_session = tag('div', best_session, 'style="font-size:18px"')
@@ -86,11 +88,40 @@ class CentralWidget(QWidget):
         best_days = tag('div', best_days, 'style="font-size:18px"')
         
         text = '\n' + best_session# + '\n<br>\n'
-        text += tag('div', pb_session, 'style="font-size:16px"') #+ '\n<br>\n' 
-        text += best_month + tag('div', pb_month, 'style="font-size:16px"') 
-        text += best_days + tag('div', pb_days, 'style="font-size:16px"')
+        text += tag('div', pb_session_text, 'style="font-size:16px"') #+ '\n<br>\n' 
+        text += best_month + tag('div', pb_month_text, 'style="font-size:16px"') 
+        text += best_days + tag('div', pb_days_text, 'style="font-size:16px"')
+        
+        self._comparePB(pb_session, pb_month, pb_days)
+        
+        self.pb_session = pb_session
+        self.pb_month = pb_month
+        self.pb_days = pb_days
         
         return text
+    
+    
+    def _comparePB(self, pb_session, pb_month, pb_days):
+        
+        changes = {}
+        
+        if pb_session != self.pb_session:
+            changes['session'] = pb_session
+        
+        if pb_month != self.pb_month:
+            changes['month'] = pb_month
+        
+        if pb_days != self.pb_days:
+            changes['days'] = pb_days
+            
+        if changes:
+            pl = 's' if len(changes) > 0 else ''
+            text = f"Congratulations! New PB{pl} set!\n"
+            for key, value in changes.items():
+                text += f"{key.capitalize()}: {value}\n"
+            self.msgbox = QMessageBox(QMessageBox.NoIcon, 'New personal best!', 
+                                      text, QMessageBox.Ok)
+            self.msgbox.exec()
         
     def getPBsession(self):
         # get best session
@@ -98,7 +129,7 @@ class CentralWidget(QWidget):
         text = bold('{:.3f} km/h'.format(best))
         text += ' achieved on {}'.format(when)
         
-        return text
+        return best, text
     
     def getPBmonth(self):
         # get best month
@@ -108,12 +139,10 @@ class CentralWidget(QWidget):
         text += ', total time: ' + bold(time) 
         text += ', calories: ' + bold(f'{cal:.2f}')
         
-        return text
+        return best, text
     
     def getPBdays(self):
-        n, first, last = get_best_days(self.data)
-        text = bold(f'{n} days') 
+        best, first, last = get_best_days(self.data)
+        text = bold(f'{best} days') 
         text += f', from {first} to {last}'
-        return text
-        
-        
+        return best, text

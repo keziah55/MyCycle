@@ -13,11 +13,23 @@ can be exported as a pdf.
 
 ![Plot](screenshots/plot.png)
 
-Most of the GUI for handling the csv data is from 
-[TimeAfterTime](https://github.com/keziah55/TimeAfterTime),
-with a few tweaks and an expansion of the `Data` class into
-a larger structure with `__getitem__` and `__setitem__` 
-methods.
+## Usage
+MyCycle can be launched from the script
+```
+mycycle
+```
+
+You may want to link it to a directory in your path
+```
+ln -s $PWD/mycycle /usr/local/bin
+```
+
+## Requirements
+
+- [PyQt5](https://pypi.org/project/PyQt5/)
+- [NumPy](https://numpy.org/)
+- [Matplotlib](https://matplotlib.org/)
+
 
 ## Branch summary
 

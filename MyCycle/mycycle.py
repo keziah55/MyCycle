@@ -7,9 +7,11 @@ Edit my cycling data
 import sys
 import os.path
 from PyQt5.QtGui import QIcon, QKeySequence
-from PyQt5.QtWidgets import (QAction, QDesktopWidget, QMainWindow, QMessageBox, QApplication)
+from PyQt5.QtWidgets import (QAction, QDesktopWidget, QMainWindow, QMessageBox, 
+                             QApplication)
+from PyQt5.QtCore import pyqtSlot as Slot
 from dataobject import Data
-from centralwidget import DataWidget
+from datawidget import DataWidget
 from editdialogs import AddLineDialog, RemoveLineDialog, EditLineDialog
 from plotdialog import PlotDialog
 
@@ -54,6 +56,7 @@ class MyCycle(QMainWindow):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
         
+    @Slot()
     def update_display(self):
         """ Update text and window title """
         self.cw.setHtml()

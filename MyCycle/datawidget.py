@@ -27,6 +27,23 @@ def bold(s):
     """ Wrap a string in html bold tag """
     return tag('b', s)
 
+def div(s, size, make_bold=False):
+    """ Format string `s` as a div. """
+    if not isinstance(size, int):
+        raise TypeError(f"Font size must be int, not {type(size)}")
+    if make_bold:
+        s = bold(s)
+    s = tag('div', s, f'style="font-size:{size}px"')
+    return s
+
+def header(s):
+    """ Format string `s` as a header. """
+    return div(s, 18, make_bold=True)
+
+def body(s):
+    """ Format string `s` as a header. """
+    return div(s, 16)
+
 
 class DataWidget(QWidget):
     
@@ -78,19 +95,9 @@ class DataWidget(QWidget):
         pb_month, pb_month_text = self.getPBmonth()
         pb_days, pb_days_text = self.getPBdays()
         
-        best_session = tag('b', 'Best Session:')
-        best_session = tag('div', best_session, 'style="font-size:18px"')
-        
-        best_month = tag('b', 'Best Month:')
-        best_month = tag('div', best_month, 'style="font-size:18px"')
-        
-        best_days = tag('b', 'Longest streak:')
-        best_days = tag('div', best_days, 'style="font-size:18px"')
-        
-        text = '\n' + best_session# + '\n<br>\n'
-        text += tag('div', pb_session_text, 'style="font-size:16px"') #+ '\n<br>\n' 
-        text += best_month + tag('div', pb_month_text, 'style="font-size:16px"') 
-        text += best_days + tag('div', pb_days_text, 'style="font-size:16px"')
+        text = '\n' + header('Best Session:') + body(pb_session_text)
+        text += header('Best Month:') + body(pb_month_text) 
+        text += header('Longest streak:') + body(pb_days_text)
         
         self._comparePB(pb_session, pb_month, pb_days)
         

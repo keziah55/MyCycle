@@ -9,9 +9,7 @@ It will also plot my average speed (km/hour) and
 total distance cycled in a Matplotlib figure, which 
 can be exported as a pdf.
 
-![MainWindow](screenshots/mainwindow.png)
 
-![Plot](screenshots/plot.png)
 
 ## Usage
 MyCycle can be launched from the script

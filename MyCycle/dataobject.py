@@ -27,7 +27,9 @@ class Data:
     def csv_exists(fname):
         
         if not os.path.exists(fname):
-            header = 'Date,Time,Distance (km),Calories,Odometer (km)\n'
+            d = os.path.split(fname)[0]
+            os.makedirs(d, exist_ok=True)
+            header = 'Date,Time,Distance (km),Calories,Odometer (km),Gear,Weight (kg)\n'
             with open(fname, 'w') as fileobj:
                 fileobj.write(header)
                 

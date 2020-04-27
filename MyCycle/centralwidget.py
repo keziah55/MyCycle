@@ -56,8 +56,9 @@ class CentralWidget(QWidget):
         
     def setHtml(self):
         """ Set text in both Personal Best and All CSV Data widgets. """
-        self.setCsvData()
-        self.setPB()
+        if len(self.data) > 0:
+            self.setCsvData()
+            self.setPB()
         
     def setCsvData(self):
         # set csv data QTextEdit

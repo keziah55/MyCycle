@@ -74,6 +74,8 @@ def get_best_month(data):
     
     best = 0
     when = ''
+    time = ''
+    cal = 0
     
     for month in months:
         

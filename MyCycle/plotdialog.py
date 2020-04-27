@@ -48,28 +48,23 @@ class PlotDialog(QWidget):
         schemeBtn1.toggled.connect(self.set_scheme_dark)
         schemeBtn2.toggled.connect(self.set_scheme_light)       
         
-        groupBox = QGroupBox() 
-        
-        groupBoxRadio = QGroupBox()
         
         schemeBtnBox = QHBoxLayout()
         schemeBtnBox.addWidget(schemeBtn1)
         schemeBtnBox.addWidget(schemeBtn2)
-        
-        groupBoxRadio.setLayout(schemeBtnBox)
-#        groupBoxRadio.setFixedSize(180,35)
         
         self.exportBtn = QPushButton("&Export pdf")
         self.exportBtn.setShortcut(QKeySequence(Qt.CTRL + Qt.Key_E))
         self.exportBtn.clicked.connect(self.export)
         
         allBox = QHBoxLayout()
-        allBox.addWidget(groupBoxRadio)
-        allBox.addWidget(self.exportBtn)
+        allBox.addLayout(schemeBtnBox)
+        allBox.addWidget(self.exportBtn, alignment=Qt.AlignVCenter)
+        allBox.setAlignment(schemeBtnBox, Qt.AlignVCenter)
         allBox.addStretch(1)
         
+        groupBox = QGroupBox() 
         groupBox.setLayout(allBox)
-#        groupBox.setFixedSize(300,50)
 
         # set the layout
         layout = QVBoxLayout()

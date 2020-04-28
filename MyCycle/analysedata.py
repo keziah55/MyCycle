@@ -100,7 +100,9 @@ def get_best_days(data):
     fmt = '%Y-%m-%d'
     days = [datetime.strptime(d[0], fmt).toordinal() for d in data]
     c = count()
-    days = max((list(g) for _, g in groupby(days, lambda x: x-next(c))), key=len)
+    groups = [list(g) for _, g in groupby(days, lambda x: x-next(c))]
+    days = max(list(reversed(groups)), key=len)
+#    days = max((list(g) for _, g in groupby(days, lambda x: x-next(c))), key=len)
     days = [date.fromordinal(d) for d in days]
     duration = len(days)
     first, last = (days[i].strftime(datefmt) for i in [0, -1])

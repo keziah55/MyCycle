@@ -91,6 +91,10 @@ class DataWidget(QWidget):
 
     def getPB(self):
         # get all Personal Best data
+        
+        # TODO get longest, farthest and fastest PBs
+        # then also can have methods to make the verbose strings, which can 
+        # also be used be the message box
         pb_session, pb_session_text = self.getPBsession()
         pb_month, pb_month_text = self.getPBmonth()
         pb_days, pb_days_text = self.getPBdays()

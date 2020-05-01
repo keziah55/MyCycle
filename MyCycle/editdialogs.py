@@ -131,17 +131,13 @@ class AddLineDialog(QDialog_CTRL_Q):
     def shape(self):
         """ Return tuple of (width, height) """
         return self.size().width(), self.size().height()
-        
+    
     def makeLine(self):
         """ Make and initialise QLineEdit objects """
-        
         edits = list(QLineEdit(self) for n in range(self.ncols))
-        
         # set today's set in the Date column
         edits[0].setText(str_to_date('').strftime(datefmt))
-            
         return tuple(edits)
-
 
     def addLine(self):
         """ Add new line to Dialog """
@@ -230,9 +226,7 @@ class TableLineDiaolg(QDialog_CTRL_Q, metaclass=QtABCMeta):
                 object which holds all the csv data
         """
         super().__init__()
-        
         self.initUI(data)
-        
         self.customise()
         
     def initUI(self, data):

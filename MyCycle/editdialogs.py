@@ -55,6 +55,9 @@ class AddLineDialog(QDialog_CTRL_Q):
         
     def initUI(self, data, columnLabels):
         
+        self.resize(700, 180)
+        self.setWindowTitle('Add data')
+        
         # 'data' is the csv data object
         self.data = data
         
@@ -117,14 +120,11 @@ class AddLineDialog(QDialog_CTRL_Q):
         layout.addWidget(groupBoxBtn)
         layout.addWidget(groupBoxEdit)
         
-        # add LineEdit objects
-        self.addLine()
-        
         # set the VBox as the layout
         self.setLayout(layout)
         
-        self.resize(700, 180)
-        self.setWindowTitle('Add data')
+        # add LineEdit objects (do this last, so that focus will be set to QLineEdit)
+        self.addLine()
         
 
     @property
@@ -156,7 +156,7 @@ class AddLineDialog(QDialog_CTRL_Q):
         
         for n in range(self.ncols):
             self.editGrid.addWidget(fields[n], self.row, n)
-        
+        self.editGrid.itemAtPosition(self.row, 0).widget().setFocus()
         
     def set_new_values(self):
         """ Put new csv data into Data object. """

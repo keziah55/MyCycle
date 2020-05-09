@@ -63,7 +63,7 @@ def get_best_session(data):
         if avg_speed > best:
             best = avg_speed
             year, mnth, day = d[0].split('-')
-            when = day + 'th ' + month_name[int(mnth)] + ' ' + year
+            when = day + ' ' + month_name[int(mnth)] + ' ' + year
             
     return best, when
 

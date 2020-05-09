@@ -55,7 +55,7 @@ class AddLineDialog(QDialog_CTRL_Q):
         
     def initUI(self, data, columnLabels):
         
-        self.resize(700, 180)
+#        self.resize(700, 180)
         self.setWindowTitle('Add data')
         
         # 'data' is the csv data object

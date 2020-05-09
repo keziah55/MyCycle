@@ -127,7 +127,7 @@ def csv_to_html(text):
             data = [g[1:-1] for g in groups[idx]]
             
             # key is month
-            html += get_header(key, total_time, total_cal, total_dist)
+            html += get_header(len(data), key, total_time, total_cal, total_dist)
             html += get_table(data)
                 
     html += get_close()
@@ -234,7 +234,7 @@ def get_close():
     return '\n</body>\n</html>'
 
 
-def get_header(monthyear, total_time, total_cal, total_dist):
+def get_header(num, monthyear, total_time, total_cal, total_dist):
     
     space = '&nbsp;'
     big_space = 2*space
@@ -242,10 +242,12 @@ def get_header(monthyear, total_time, total_cal, total_dist):
     
     h1 = '<h1>{}</h1>'.format(monthyear)
 
-    h2 = '<h2>{}Totals:{}{},{}{:.2f} km,{}{:.2f} cal</h2>'.format(bigger_space, 
-             bigger_space, total_time, big_space, total_dist, big_space, 
-             total_cal)
-    
+    h2 = f"{bigger_space}Totals:{bigger_space}"
+    lst = [f"{num} sessions", total_time, f"{total_dist:.2f} km", 
+           f"{total_cal:.2f} cal"]
+    h2 += f", {big_space}".join(lst)
+    h2 = f"<h2>{h2}</h2>"
+
     header = h1+h2
 
     return header

@@ -156,7 +156,7 @@ class AddLineDialog(QDialog_CTRL_Q):
         
     def set_new_values(self):
         """ Put new csv data into Data object. """
-        
+        # TODO validate input (e.g. using : as separator instead of .)
         new_rows = []
         
         error = False

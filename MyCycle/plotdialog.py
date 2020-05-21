@@ -8,6 +8,8 @@ from PyQt5.QtWidgets import (QAction, QDesktopWidget, QFileDialog, QGroupBox,
                              QHBoxLayout, QPushButton, QRadioButton, 
                              QVBoxLayout, QWidget)
 
+from pyqtgraph import PlotWidget
+
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import (FigureCanvasQTAgg, 
                                                 NavigationToolbar2QT)

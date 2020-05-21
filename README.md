@@ -28,7 +28,7 @@ ln -s $PWD/mycycle /usr/local/bin
 
 - [PyQt5](https://pypi.org/project/PyQt5/)
 - [NumPy](https://numpy.org/)
-- [Matplotlib](https://matplotlib.org/)
+- [PyQtGraph](https://pypi.org/project/pyqtgraph/)
 
 
 ## Branch summary

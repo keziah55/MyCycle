@@ -237,15 +237,12 @@ def get_close():
 def get_header(num, monthyear, total_time, total_cal, total_dist):
     
     space = '&nbsp;'
-    big_space = 2*space
-    bigger_space = 3*space
     
     h1 = '<h1>{}</h1>'.format(monthyear)
 
-    h2 = f"{bigger_space}Totals:{bigger_space}"
     lst = [f"{num} sessions", total_time, f"{total_dist:.2f} km", 
            f"{total_cal:.2f} cal"]
-    h2 += f", {big_space}".join(lst)
+    h2 = f",{space}".join(lst)
     h2 = f"<h2>{h2}</h2>"
 
     header = h1+h2
